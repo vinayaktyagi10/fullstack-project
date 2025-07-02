@@ -1,5 +1,4 @@
 # backend/Dockerfile
-
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -14,9 +13,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Expose port (optional since internal)
+# Create necessary directories
+RUN mkdir -p uploads converted
+
+# Expose port
 EXPOSE 8000
 
-# Start the FastAPI app
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
-
+# Start the Flask app with gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "app:app"]
