@@ -4,3 +4,4 @@ python-pptx
 PyMuPDF
 werkzeug
 gunicorn
+uvicorn
