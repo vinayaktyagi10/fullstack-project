@@ -1,5 +1,4 @@
 services:
-  # Backend service (Flask)
   backend:
     build:
       context: ./backend
@@ -8,6 +7,8 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - FLASK_ENV=production
+      # Add VM external IP if needed
+      - VM_EXTERNAL_IP=${VM_EXTERNAL_IP:-}
     volumes:
       - backend_uploads:/app/uploads
       - backend_converted:/app/converted
@@ -21,7 +22,6 @@ services:
     networks:
       - app-network
 
-  # Frontend service (React)
   frontend:
     build:
       context: ./frontend
@@ -29,15 +29,7 @@ services:
     container_name: pdf-converter-frontend
     restart: unless-stopped
     healthcheck:
-      test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://localhost:3000/",
-        ]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -45,7 +37,6 @@ services:
     networks:
       - app-network
 
-  # Caddy reverse proxy
   caddy:
     image: caddy:2.7.6-alpine
     container_name: pdf-converter-caddy

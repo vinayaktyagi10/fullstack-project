@@ -19,15 +19,19 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["CONVERTED_FOLDER"] = CONVERTED_FOLDER
 
 # allow both localhost and production frontend for CORS
+# Replace the CORS section with:
 CORS(
     app,
     origins=[
         "http://localhost:3000",
         "https://smart-file-converter.vercel.app",
         "https://pdf-2-ppt.vercel.app",
+        # Add your VM's external IP
+        f"http://{os.environ.get('VM_EXTERNAL_IP', '*')}",
+        # Allow any origin for VM deployment (less secure but simpler)
+        "*"
     ],
 )
-
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(CONVERTED_FOLDER, exist_ok=True)
 
